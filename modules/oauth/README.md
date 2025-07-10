@@ -1,4 +1,4 @@
-## Secure SPA with OAuth2
+## Practice OAuth2
 
 ### Goal
 

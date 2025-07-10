@@ -11,7 +11,7 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
-    <artifactId>practice-oauth2-spa</artifactId>
+    <artifactId>practice-oauth</artifactId>
 
     <dependencies>
         <dependency>
