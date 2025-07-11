@@ -18,6 +18,8 @@
 
 		<lombok.version>1.18.38</lombok.version>
 		<jjwt.version>0.12.6</jjwt.version>
+		<preliquibase.version>1.6.1</preliquibase.version>
+		<liquibase.version>4.32.0</liquibase.version>
 
 		<junit-jupiter.version>5.10.0</junit-jupiter.version>
 		<testcontainers.version>1.21.3</testcontainers.version>
@@ -107,6 +109,16 @@
 				<groupId>io.jsonwebtoken</groupId>
 				<artifactId>jjwt-api</artifactId>
 				<version>${jjwt.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>net.lbruun.springboot</groupId>
+				<artifactId>preliquibase-spring-boot-starter</artifactId>
+				<version>${preliquibase.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.liquibase</groupId>
+				<artifactId>liquibase-core</artifactId>
+				<version>${liquibase.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

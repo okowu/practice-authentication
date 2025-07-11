@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/practice
+    username: ${DB_USERNAME:}
+    password: ${DB_PASSWORD:}
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        default_schema: jwt
+        ddl-auto: none
+  liquibase:
+    enabled: true
+    default-schema: jwt
+    change-log: classpath:db/changelog/db.changelog-master.xml
