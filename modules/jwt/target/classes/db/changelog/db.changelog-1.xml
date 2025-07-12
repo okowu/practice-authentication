@@ -1,48 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <databaseChangeLog
-        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
-    <changeSet id="1" author="okowu">
-        <createTable tableName="user">
-            <column name="id" type="bigint">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="email" type="varchar(255)">
-                <constraints nullable="false" unique="true"/>
-            </column>
-            <column name="password" type="varchar(255)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="roles" type="varchar(255)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="created_at" type="timestamptz">
-                <constraints nullable="false"/>
-            </column>
-            <column name="last_login" type="timestamptz">
-                <constraints nullable="true"/>
-            </column>
-        </createTable>
-    </changeSet>
+		xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+	<changeSet id="1" author="okowu">
+		<createTable tableName="user">
+			<column name="id" type="bigserial">
+				<constraints primaryKey="true" nullable="false"/>
+			</column>
+			<column name="email" type="varchar(255)">
+				<constraints nullable="false" unique="true"/>
+			</column>
+			<column name="password" type="varchar(255)">
+				<constraints nullable="false"/>
+			</column>
+			<column name="role" type="varchar(255)">
+				<constraints nullable="false"/>
+			</column>
+			<column name="created_at" type="timestamptz">
+				<constraints nullable="false" />
+			</column>
+			<column name="last_login" type="timestamptz">
+				<constraints nullable="true"/>
+			</column>
+		</createTable>
+	</changeSet>
 
-    <changeSet id="1.1" author="okowu">
-        <createTable tableName="document">
-            <column name="id" type="bigint">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="title" type="varchar(255)">
-                <constraints nullable="false" />
-            </column>
-            <column name="owner_id" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-            <column name="created_at" type="timestamptz">
-                <constraints nullable="false"/>
-            </column>
-            <column name="visibility" type="boolean" defaultValue="true">
-                <constraints nullable="true" />
-            </column>
-        </createTable>
-    </changeSet>
+	<changeSet id="1.1" author="okowu">
+		<createTable tableName="document">
+			<column name="id" type="bigserial">
+				<constraints primaryKey="true" nullable="false"/>
+			</column>
+			<column name="title" type="varchar(255)">
+				<constraints nullable="false" />
+			</column>
+			<column name="owner_id" type="bigint">
+				<constraints nullable="false"/>
+			</column>
+			<column name="created_at" type="timestamptz">
+				<constraints nullable="false"/>
+			</column>
+			<column name="visibility" type="boolean" defaultValue="true">
+				<constraints nullable="true" />
+			</column>
+		</createTable>
+	</changeSet>
 </databaseChangeLog>

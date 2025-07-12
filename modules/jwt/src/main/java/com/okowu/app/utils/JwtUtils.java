@@ -1,4 +1,4 @@
-package com.okowu.app;
+package com.okowu.app.utils;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwe;

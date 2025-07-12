@@ -5,7 +5,7 @@
 		xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 	<changeSet id="1" author="okowu">
 		<createTable tableName="user">
-			<column name="id" type="bigint">
+			<column name="id" type="bigserial">
 				<constraints primaryKey="true" nullable="false"/>
 			</column>
 			<column name="email" type="varchar(255)">
@@ -14,11 +14,11 @@
 			<column name="password" type="varchar(255)">
 				<constraints nullable="false"/>
 			</column>
-			<column name="roles" type="varchar(255)">
+			<column name="role" type="varchar(255)">
 				<constraints nullable="false"/>
 			</column>
 			<column name="created_at" type="timestamptz">
-				<constraints nullable="false"/>
+				<constraints nullable="false" />
 			</column>
 			<column name="last_login" type="timestamptz">
 				<constraints nullable="true"/>
@@ -28,7 +28,7 @@
 
 	<changeSet id="1.1" author="okowu">
 		<createTable tableName="document">
-			<column name="id" type="bigint">
+			<column name="id" type="bigserial">
 				<constraints primaryKey="true" nullable="false"/>
 			</column>
 			<column name="title" type="varchar(255)">
