@@ -17,7 +17,6 @@ import lombok.NoArgsConstructor;
 public class JwtUtils {
 
   private static final String ISSUER = "JWT_APP";
-  private static final long DEFAULT_EXPIRATION_MILLIS = 3600;
 
   public static String createJwt(String base64Key, long expirationMillis) {
     byte[] keyBytes = Base64.getDecoder().decode(base64Key);

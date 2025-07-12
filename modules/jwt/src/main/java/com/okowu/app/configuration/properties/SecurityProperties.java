@@ -1,4 +1,4 @@
-package com.okowu.app.configuration;
+package com.okowu.app.configuration.properties;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;

@@ -1,4 +1,4 @@
-package com.okowu.app.configuration;
+package com.okowu.app.configuration.security;
 
 import com.okowu.app.user.db.UserRepository;
 import lombok.RequiredArgsConstructor;
