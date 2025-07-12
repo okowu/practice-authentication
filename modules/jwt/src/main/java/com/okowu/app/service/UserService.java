@@ -1,4 +1,3 @@
 package com.okowu.app.service;
 
-public interface UserService {
-}
+public interface UserService {}

@@ -13,3 +13,9 @@ spring:
     enabled: true
     default-schema: jwt
     change-log: classpath:db/changelog/db.changelog-master.xml
+
+security:
+  jwt:
+    secretKey: ${JWT_SECRET:}
+    expirationMillis: 3600
+    issuer: jwt-practice
