@@ -37,3 +37,25 @@ The analogy is:
 - RSA is used to encrypt the AES key, and AES is used to encrypt the payload.
 
 The issuer of the JWE will require the public key of the receiver to encrypt the AES key and vice versa.
+
+## Spring Web Security
+
+The practice is about JWT authentication, so it is important to understand how Spring Web Security works.
+
+### Remove Basic Authentication
+
+This is achieved by removing the `BasicAuthenticationFilter` from the filter chain.
+Simply omit the `httpBasic()` method in the `securityFilterChain(HttpSecurity http)` method of your security configuration class.
+
+Difference between BasicAuthenticationFilter and UsernamePasswordAuthenticationFilter
+
+- `BasicAuthenticationFilter` is applied to all requests and looks for the `Authorization: Basic ` header in the HTTP request to authenticate and set the user in the security context.
+- `UsernamePasswordAuthenticationFilter` is used for login authentication on specific login endpoints and leverages [AuthenticationManager](https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/index.html#publish-authentication-manager-bean) to authenticate user via a REST API
+
+### Session Management
+
+Since JWT is stateless, we need to disable session management in Spring Security.
+
+### CSRF Protection
+
+CSRF protection is not needed for stateless JWT authentication, so it can be disabled.

@@ -10,6 +10,7 @@ import org.hibernate.validator.constraints.Length;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -26,7 +27,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         new UsernamePasswordAuthenticationToken(email, password);
     Authentication authentication = authenticationManager.authenticate(authenticationToken);
     SecurityProperties.Jwt jwtProperties = securityProperties.jwt();
-    String jwt = JwtUtils.createJwt(jwtProperties.secretKey(), jwtProperties.expirationMillis());
+    UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+    String jwt = JwtUtils.createJwt(jwtProperties, userDetails);
     return new AuthenticationSuccess(jwt);
   }
 }

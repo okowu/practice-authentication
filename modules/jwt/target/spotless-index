@@ -5,12 +5,13 @@ src/main/java/com/okowu/app/GlobalExceptionHandler.java 2025-07-12T15:42:41.4742
 src/main/java/com/okowu/app/JwtApplication.java 2025-07-12T21:19:22.784732331Z
 src/main/java/com/okowu/app/authentication/AuthenticationController.java 2025-07-12T21:19:33.033700444Z
 src/main/java/com/okowu/app/authentication/AuthenticationService.java 2025-07-12T19:08:22.543361259Z
-src/main/java/com/okowu/app/authentication/AuthenticationServiceImpl.java 2025-07-12T19:12:15.136779777Z
+src/main/java/com/okowu/app/authentication/AuthenticationServiceImpl.java 2025-07-12T21:36:08.961585314Z
 src/main/java/com/okowu/app/authentication/schema/AuthenticationRequest.java 2025-07-12T21:19:33.041925642Z
 src/main/java/com/okowu/app/authentication/schema/AuthenticationSuccess.java 2025-07-12T19:08:22.537525705Z
 src/main/java/com/okowu/app/configuration/properties/SecurityProperties.java 2025-07-12T21:19:33.009917477Z
-src/main/java/com/okowu/app/configuration/security/JwtUserDetailsService.java 2025-07-12T18:32:53.078097313Z
-src/main/java/com/okowu/app/configuration/security/WebSecurityConfig.java 2025-07-12T21:19:32.997450595Z
+src/main/java/com/okowu/app/configuration/security/AppUserDetailsService.java 2025-07-12T21:38:19.091528803Z
+src/main/java/com/okowu/app/configuration/security/JwtAuthenticationFilter.java 2025-07-13T08:56:53.623916494Z
+src/main/java/com/okowu/app/configuration/security/WebSecurityConfig.java 2025-07-13T08:15:23.993627490Z
 src/main/java/com/okowu/app/document/DocumentController.java 2025-07-12T15:42:41.481265686Z
 src/main/java/com/okowu/app/document/DocumentService.java 2025-07-12T15:41:47.740349682Z
 src/main/java/com/okowu/app/document/DocumentServiceImpl.java 2025-07-12T15:41:47.738575648Z
@@ -23,7 +24,7 @@ src/main/java/com/okowu/app/user/db/User.java 2025-07-12T17:37:26.090389378Z
 src/main/java/com/okowu/app/user/db/UserRepository.java 2025-07-12T17:17:20.679957026Z
 src/main/java/com/okowu/app/user/exception/UserException.java 2025-07-12T19:05:32.778115981Z
 src/main/java/com/okowu/app/user/schema/UserRegistrationRequest.java 2025-07-12T17:37:26.078058940Z
-src/main/java/com/okowu/app/utils/JwtUtils.java 2025-07-12T18:27:44.779533563Z
+src/main/java/com/okowu/app/utils/JwtUtils.java 2025-07-12T21:49:39.052541160Z
 src/main/resources/db/changelog/db.changelog-1.xml 2025-07-12T17:31:53.923608975Z
 src/main/resources/db/changelog/db.changelog-master.xml 2025-07-12T13:16:50.426722209Z
 src/test/java/com/okowu/app/PostgreSQLContainerInitializer.java 2025-07-12T17:17:20.551682507Z
