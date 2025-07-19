@@ -17,8 +17,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Setter
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "refresh_token", schema = "jwt")
-public class RefreshToken {
+@Table(name = "invalidated_token", schema = "jwt")
+public class InvalidatedToken {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,14 +33,4 @@ public class RefreshToken {
   @CreatedDate
   @Column(name = "created_at", nullable = false)
   private Instant createdAt;
-
-  @Column(name = "expires_at", nullable = false)
-  private Instant expiresAt;
-
-  @Column(name = "used", nullable = false)
-  private boolean used;
-
-  public boolean equalsToken(String token) {
-    return this.token.equals(token);
-  }
 }

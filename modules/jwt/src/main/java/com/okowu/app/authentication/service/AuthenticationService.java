@@ -1,10 +1,12 @@
 package com.okowu.app.authentication.service;
 
-import com.okowu.app.authentication.schema.AuthenticationResponse;
+import com.okowu.app.authentication.schema.LoginResponse;
 
 public interface AuthenticationService {
 
-  AuthenticationResponse login(String email, String password);
+  LoginResponse login(String email, String password);
 
-  AuthenticationResponse refresh(String refreshToken);
+  LoginResponse refresh(String refreshToken);
+
+  void logout(String accessToken, String refreshToken);
 }

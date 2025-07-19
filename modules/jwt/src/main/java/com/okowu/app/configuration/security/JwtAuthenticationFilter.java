@@ -1,7 +1,7 @@
 package com.okowu.app.configuration.security;
 
-import com.okowu.app.configuration.properties.SecurityProperties;
-import com.okowu.app.utils.JwtUtils;
+import com.okowu.app.authentication.AuthenticationException;
+import com.okowu.app.authentication.service.TokenService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwe;
@@ -22,13 +22,14 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
+  private final TokenService tokenService;
   private final UserDetailsService userDetailsService;
-  private final SecurityProperties securityProperties;
 
   @Override
   protected void doFilterInternal(
       HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
       throws ServletException, IOException {
+
     String authorizationHeader = request.getHeader("Authorization");
 
     if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
@@ -39,10 +40,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     String token = authorizationHeader.substring(7);
 
     try {
-      Jwe<Claims> jwe = JwtUtils.parseToken(token, securityProperties.jwt().secretKey());
-      String email = jwe.getPayload().getSubject();
-
-      UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+      Jwe<Claims> jwe = tokenService.validateToken(token);
+      String subject = jwe.getPayload().getSubject();
+      UserDetails userDetails = userDetailsService.loadUserByUsername(subject);
       Authentication authentication =
           new UsernamePasswordAuthenticationToken(
               userDetails.getUsername(), userDetails.getPassword(), userDetails.getAuthorities());
@@ -52,6 +52,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
       return;
     } catch (JwtException e) {
       response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid JWT value");
+      return;
+    } catch (AuthenticationException e) {
+      response.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
       return;
     }
 

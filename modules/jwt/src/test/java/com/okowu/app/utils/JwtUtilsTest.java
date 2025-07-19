@@ -1,9 +1,8 @@
 package com.okowu.app.utils;
 
+import static com.okowu.app.utils.JwtUtils.Token;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
-import static com.okowu.app.utils.JwtUtils.Token;
 
 import com.okowu.app.TestUtils;
 import io.jsonwebtoken.Claims;

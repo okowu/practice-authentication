@@ -1,5 +1,6 @@
 package com.okowu.app.utils;
 
+import com.okowu.app.configuration.properties.SecurityProperties;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwe;
 import io.jsonwebtoken.Jwts;
@@ -19,6 +20,25 @@ public class JwtUtils {
 
   public record Token(String value, Date expirationDate) {}
 
+  public static Token getAccessToken(
+      String email, String role, SecurityProperties securityProperties) {
+    SecurityProperties.Jwt jwtProperties = securityProperties.jwt();
+    Date expirationDate = expirationDate(jwtProperties.expirationMillis());
+    return new Token(
+        Jwts.builder()
+            .header()
+            .and()
+            .id(UUID.randomUUID().toString())
+            .issuer(ISSUER)
+            .issuedAt(new Date())
+            .subject(email)
+            .claim("role", role)
+            .expiration(expirationDate)
+            .encryptWith(secretKey(jwtProperties.secretKey()), Jwts.ENC.A256GCM)
+            .compact(),
+        expirationDate);
+  }
+
   public static Token generateAccessToken(
       String email, String role, long expirationMillis, String key) {
     Date expirationDate = expirationDate(expirationMillis);
@@ -37,8 +57,24 @@ public class JwtUtils {
         expirationDate);
   }
 
-  public static Token generateRefreshToken(
-      String email, long expirationMillis, String key) {
+  public static Token getRefreshToken(String email, SecurityProperties securityProperties) {
+    SecurityProperties.Jwt jwtProperties = securityProperties.jwt();
+    Date expirationDate = expirationDate(jwtProperties.refreshExpirationMillis());
+    return new Token(
+        Jwts.builder()
+            .header()
+            .and()
+            .id(UUID.randomUUID().toString())
+            .issuer(ISSUER)
+            .issuedAt(new Date())
+            .subject(email)
+            .expiration(expirationDate)
+            .encryptWith(secretKey(jwtProperties.secretKey()), Jwts.ENC.A256GCM)
+            .compact(),
+        expirationDate);
+  }
+
+  public static Token generateRefreshToken(String email, long expirationMillis, String key) {
     Date expirationDate = expirationDate(expirationMillis);
     return new Token(
         Jwts.builder()

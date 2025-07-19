@@ -1,6 +1,6 @@
 package com.okowu.app.configuration.security;
 
-import com.okowu.app.configuration.properties.SecurityProperties;
+import com.okowu.app.authentication.service.TokenService;
 import com.okowu.app.user.db.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,9 +23,7 @@ public class WebSecurityConfig {
 
   @Bean
   public SecurityFilterChain securityFilterChain(
-      HttpSecurity http,
-      SecurityProperties securityProperties,
-      UserDetailsService userDetailsService)
+      HttpSecurity http, TokenService tokenService, UserDetailsService userDetailsService)
       throws Exception {
     return http.csrf(AbstractHttpConfigurer::disable)
         .sessionManagement(
@@ -38,7 +36,7 @@ public class WebSecurityConfig {
                     .anyRequest()
                     .authenticated())
         .addFilterBefore(
-            new JwtAuthenticationFilter(userDetailsService, securityProperties),
+            new JwtAuthenticationFilter(tokenService, userDetailsService),
             UsernamePasswordAuthenticationFilter.class)
         .build();
   }
