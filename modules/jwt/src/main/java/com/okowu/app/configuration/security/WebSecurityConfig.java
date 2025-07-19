@@ -33,7 +33,7 @@ public class WebSecurityConfig {
         .authorizeHttpRequests(
             authorize ->
                 authorize
-                    .requestMatchers("/users/register", "/auth/login")
+                    .requestMatchers("/users/register", "/auth/*")
                     .permitAll()
                     .anyRequest()
                     .authenticated())
@@ -51,8 +51,7 @@ public class WebSecurityConfig {
   @Bean
   public AuthenticationManager authenticationManager(
       UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
-    DaoAuthenticationProvider authenticationProvider =
-        new DaoAuthenticationProvider(passwordEncoder);
+    var authenticationProvider = new DaoAuthenticationProvider(passwordEncoder);
     authenticationProvider.setUserDetailsService(userDetailsService);
     return new ProviderManager(authenticationProvider);
   }

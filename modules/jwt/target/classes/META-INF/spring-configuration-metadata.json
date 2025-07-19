@@ -25,6 +25,18 @@
       "sourceType": "com.okowu.app.configuration.properties.SecurityProperties$Jwt"
     },
     {
+      "name": "security.jwt.refresh-expiration-millis",
+      "type": "java.lang.Long",
+      "sourceType": "com.okowu.app.configuration.properties.SecurityProperties$Jwt",
+      "defaultValue": 0
+    },
+    {
+      "name": "security.jwt.refresh-expiration-seconds",
+      "type": "java.lang.Long",
+      "sourceType": "com.okowu.app.configuration.properties.SecurityProperties$Jwt",
+      "defaultValue": 0
+    },
+    {
       "name": "security.jwt.secret-key",
       "type": "java.lang.String",
       "sourceType": "com.okowu.app.configuration.properties.SecurityProperties$Jwt"

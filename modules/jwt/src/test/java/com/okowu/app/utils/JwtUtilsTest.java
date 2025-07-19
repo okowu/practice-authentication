@@ -3,60 +3,52 @@ package com.okowu.app.utils;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import static com.okowu.app.utils.JwtUtils.Token;
+
+import com.okowu.app.TestUtils;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwe;
-import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.security.WeakKeyException;
-import java.security.SecureRandom;
-import java.util.Base64;
+import java.time.Instant;
 import org.junit.jupiter.api.Test;
 
-class JwtUtilsTest {
-
-  static String key = "kY6Mx5F9Ofq6zGyN7FzixTzqsArPQquO9jrpJDh+NDE=";
+public class JwtUtilsTest {
+  static String SECRET_KEY = "kY6Mx5F9Ofq6zGyN7FzixTzqsArPQquO9jrpJDh+NDE=";
+  static String EMAIL = "mytest@gmail.com";
+  static String ROLE = "mydummyrole";
 
   @Test
-  void testCreateJwt() {
-    String jwt = JwtUtils.createJwt(key, 1);
-    assertThat(jwt).isNotBlank();
+  void testGenerateAccessToken() {
+    Instant now = Instant.now();
+    Token accessToken = JwtUtils.generateAccessToken(EMAIL, ROLE, 5, SECRET_KEY);
+
+    assertThat(accessToken.value()).isNotBlank();
+    assertThat(accessToken.expirationDate()).isAfterOrEqualTo(now.plusMillis(5));
   }
 
   @Test
-  void testCreateJwtShouldFailGivenInvalidLengthKey() {
-    byte[] bytes = new byte[31];
-    new SecureRandom().nextBytes(bytes);
-    String invalidKey = Base64.getEncoder().encodeToString(bytes);
+  void testParseAccessToken() {
+    Token accessToken = JwtUtils.generateAccessToken(EMAIL, ROLE, 1000, SECRET_KEY);
 
-    assertThatThrownBy(() -> JwtUtils.createJwt(invalidKey, 1))
-        .isInstanceOf(WeakKeyException.class);
-  }
-
-  @Test
-  void testParseJwt() {
-    String jwt = JwtUtils.createJwt(key, 1000);
-
-    Jwe<Claims> jwe = JwtUtils.parseJwt(key, jwt);
+    Jwe<Claims> jwe = JwtUtils.parseToken(accessToken.value(), SECRET_KEY);
     assertThat(jwe).isNotNull();
+    assertThat(jwe.getPayload().getSubject()).isEqualTo(EMAIL);
   }
 
   @Test
-  void testParseJwtShouldFailGivenInvalidKey() {
-    String jwt = JwtUtils.createJwt(key, 3);
+  void testGenerateRefreshToken() {
+    Instant now = Instant.now();
+    Token refreshToken = JwtUtils.generateRefreshToken(EMAIL, 5, SECRET_KEY);
 
-    byte[] bytes = new byte[32];
-    new SecureRandom().nextBytes(bytes);
-    String invalidKey = Base64.getEncoder().encodeToString(bytes);
-
-    assertThatThrownBy(() -> JwtUtils.parseJwt(invalidKey, jwt)).isInstanceOf(JwtException.class);
+    assertThat(refreshToken.value()).isNotBlank();
+    assertThat(refreshToken.expirationDate()).isAfterOrEqualTo(now.plusSeconds(5));
   }
 
   @Test
-  void testParseJwtShouldFailGivenExpired() throws InterruptedException {
-    String jwt = JwtUtils.createJwt(key, 1);
+  void testGenerateAccessTokenShouldFailGivenInvalidEncryptionKey() {
+    String invalidKey = TestUtils.generateRandomKey(31);
 
-    Thread.sleep(2);
-
-    assertThatThrownBy(() -> JwtUtils.parseJwt(key, jwt)).isInstanceOf(ExpiredJwtException.class);
+    assertThatThrownBy(() -> JwtUtils.generateAccessToken(EMAIL, ROLE, 10, invalidKey))
+        .isInstanceOf(WeakKeyException.class);
   }
 }

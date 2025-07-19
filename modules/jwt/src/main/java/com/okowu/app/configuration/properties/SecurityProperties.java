@@ -7,5 +7,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "security")
 public record SecurityProperties(@Valid Jwt jwt) {
 
-  public record Jwt(@NotBlank String secretKey, @NotBlank String issuer, long expirationMillis) {}
+  public record Jwt(
+      @NotBlank String secretKey, long expirationMillis, long refreshExpirationMillis) {}
 }

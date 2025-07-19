@@ -4,6 +4,8 @@ import com.okowu.app.user.db.User;
 import com.okowu.app.user.db.UserRepository;
 import com.okowu.app.user.exception.UserException;
 import com.okowu.app.user.schema.UserRegistrationRequest;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -27,5 +29,10 @@ public class UserServiceImpl implements UserService {
     user.setPassword(encodedPassword);
     user.setRole("ROLE_USER");
     return userRepository.save(user).getId();
+  }
+
+  @Override
+  public User findByEmail(@Email @NotBlank String email) {
+    return userRepository.findByEmail(email).orElseThrow(() -> UserException.userNotFound(email));
   }
 }

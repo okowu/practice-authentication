@@ -37,10 +37,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     String token = authorizationHeader.substring(7);
-    SecurityProperties.Jwt jwtProperties = securityProperties.jwt();
 
     try {
-      Jwe<Claims> jwe = JwtUtils.parseJwt(jwtProperties.secretKey(), token);
+      Jwe<Claims> jwe = JwtUtils.parseToken(token, securityProperties.jwt().secretKey());
       String email = jwe.getPayload().getSubject();
 
       UserDetails userDetails = userDetailsService.loadUserByUsername(email);
@@ -49,10 +48,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
               userDetails.getUsername(), userDetails.getPassword(), userDetails.getAuthorities());
       SecurityContextHolder.getContext().setAuthentication(authentication);
     } catch (ExpiredJwtException e) {
-      response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Expired JWT token");
+      response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Expired JWT value");
       return;
     } catch (JwtException e) {
-      response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid JWT token");
+      response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid JWT value");
       return;
     }
 

@@ -1,11 +1,8 @@
 package com.okowu.app.utils;
 
-import static com.okowu.app.configuration.properties.SecurityProperties.Jwt;
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwe;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.lang.Assert;
 import java.time.Instant;
 import java.util.Base64;
 import java.util.Date;
@@ -14,53 +11,59 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class JwtUtils {
 
   private static final String ISSUER = "JWT_APP";
 
-  public static String createJwt(Jwt jwtProperties, UserDetails userDetails) {
-    byte[] keyBytes = Base64.getDecoder().decode(jwtProperties.secretKey());
-    SecretKey secretKey = new SecretKeySpec(keyBytes, "AES");
-    String role =
-        userDetails.getAuthorities().stream().findFirst().map(Object::toString).orElse("ANONYMOUS");
-    return Jwts.builder()
-        .header()
-        .and()
-        .id(UUID.randomUUID().toString())
-        .issuer(ISSUER)
-        .issuedAt(new Date())
-        .subject(userDetails.getUsername())
-        .claim("role", role)
-        .expiration(calculateExpirationDate(jwtProperties.expirationMillis()))
-        .encryptWith(secretKey, Jwts.ENC.A256GCM)
-        .compact();
+  public record Token(String value, Date expirationDate) {}
+
+  public static Token generateAccessToken(
+      String email, String role, long expirationMillis, String key) {
+    Date expirationDate = expirationDate(expirationMillis);
+    return new Token(
+        Jwts.builder()
+            .header()
+            .and()
+            .id(UUID.randomUUID().toString())
+            .issuer(ISSUER)
+            .issuedAt(new Date())
+            .subject(email)
+            .claim("role", role)
+            .expiration(expirationDate)
+            .encryptWith(secretKey(key), Jwts.ENC.A256GCM)
+            .compact(),
+        expirationDate);
   }
 
-  public static String createJwt(String base64Key, long expirationMillis) {
-    byte[] keyBytes = Base64.getDecoder().decode(base64Key);
-    SecretKey secretKey = new SecretKeySpec(keyBytes, "AES");
-    return Jwts.builder()
-        .header()
-        .and()
-        .id(UUID.randomUUID().toString())
-        .issuer(ISSUER)
-        .issuedAt(new Date())
-        .expiration(calculateExpirationDate(expirationMillis))
-        .encryptWith(secretKey, Jwts.ENC.A256GCM)
-        .compact();
+  public static Token generateRefreshToken(
+      String email, long expirationMillis, String key) {
+    Date expirationDate = expirationDate(expirationMillis);
+    return new Token(
+        Jwts.builder()
+            .header()
+            .and()
+            .id(UUID.randomUUID().toString())
+            .issuer(ISSUER)
+            .issuedAt(new Date())
+            .subject(email)
+            .expiration(expirationDate)
+            .encryptWith(secretKey(key), Jwts.ENC.A256GCM)
+            .compact(),
+        expirationDate);
   }
 
-  public static Jwe<Claims> parseJwt(String base64Key, String jwt) {
-    Assert.hasText(jwt);
-    byte[] keyBytes = Base64.getDecoder().decode(base64Key);
-    SecretKey secretKey = new SecretKeySpec(keyBytes, "AES");
-    return Jwts.parser().decryptWith(secretKey).build().parseEncryptedClaims(jwt);
+  public static Jwe<Claims> parseToken(String token, String key) {
+    return Jwts.parser().decryptWith(secretKey(key)).build().parseEncryptedClaims(token);
   }
 
-  private static Date calculateExpirationDate(long expirationMillis) {
+  private static Date expirationDate(long expirationMillis) {
     return Date.from(Instant.now().plusMillis(expirationMillis));
+  }
+
+  private static SecretKey secretKey(String key) {
+    byte[] keyBytes = Base64.getDecoder().decode(key);
+    return new SecretKeySpec(keyBytes, "AES");
   }
 }
