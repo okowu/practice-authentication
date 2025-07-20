@@ -20,7 +20,7 @@ public class UserServiceImpl implements UserService {
   @Override
   public long registerUser(UserRegistrationRequest request) {
     if (userRepository.existsByEmail(request.email())) {
-      throw UserException.USER_ALREADY_EXISTS;
+      throw UserException.userExists(request.email());
     }
 
     String encodedPassword = passwordEncoder.encode(request.password());

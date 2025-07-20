@@ -38,7 +38,7 @@ The analogy is:
 
 The issuer of the JWE will require the public key of the receiver to encrypt the AES key and vice versa.
 
-## Spring Web Security
+## Spring Boot Web Security
 
 The practice is about JWT authentication, so it is important to understand how Spring Web Security works.
 
@@ -59,3 +59,44 @@ Since JWT is stateless, we need to disable session management in Spring Security
 ### CSRF Protection
 
 CSRF protection is not needed for stateless JWT authentication, so it can be disabled.
+
+### CORS
+
+By default, browsers block cross-origin requests.
+This is to prevent malicious websites from making requests to your application on behalf of the user.
+CORS allows servers to specify which origins are allowed to access their resources.
+
+We need to configure CORS in the Spring Security configuration.
+- Access-Control-Allow-Headers: specify the headers that are allowed in the request.
+- Access-Control-Allow-Methods: specify the HTTP methods that are allowed in the request. OPTIONS is needed for preflight requests.
+- Access-Control-Allow-Credentials: set to true to allow cookies to be sent with the request.
+- Access-Control-Allow-Origin: specify the origin that is allowed to access the resource. Use `*` to allow all origins, or specify a specific origin.
+- Access-Control-Expose-Headers: specify the headers that are exposed to the client. This is needed to expose the `Authorization` header in the response.
+
+This can be achieved in Spring Security by providing a `CorsConfigurationSource` bean and using the `cors(Customizer.withDefaults())` method 
+in the `securityFilterChain(HttpSecurity http)` method of your security configuration class.
+
+```java
+@Bean
+public SecurityFilterChain securityFilterChain(HttpSecurity http)
+        throws Exception {
+    return http
+            .cors(Customizer.withDefaults())
+            // ...
+            .build();
+}
+
+@Bean
+CorsConfigurationSource corsConfigurationSource() {
+    CorsConfiguration configuration = new CorsConfiguration();
+    configuration.setAllowedOriginPatterns(List.of("change-me")); // specify your frontend origin
+    configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+    configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+    configuration.setExposedHeaders(List.of("Authorization"));
+    configuration.setAllowCredentials(true);
+
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/**", configuration);
+    return source;
+}
+```

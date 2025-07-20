@@ -1,13 +1,14 @@
 package com.okowu.app;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
+import org.springframework.http.HttpStatus;
 
 @Getter
-@AllArgsConstructor
+@Setter
 public class AppException extends RuntimeException {
 
-  private String code;
+  private HttpStatus status;
   private String title;
-  private String detail;
+  private String message;
 }
