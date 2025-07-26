@@ -1,5 +1,6 @@
 package com.okowu.app.configuration.security;
 
+import com.okowu.app.authentication.service.AuthenticationService;
 import com.okowu.app.authentication.service.TokenService;
 import com.okowu.app.user.db.UserRepository;
 import java.util.List;
@@ -18,6 +19,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -28,7 +30,10 @@ public class WebSecurityConfig {
 
   @Bean
   public SecurityFilterChain securityFilterChain(
-      HttpSecurity http, TokenService tokenService, UserDetailsService userDetailsService)
+      HttpSecurity http,
+      TokenService tokenService,
+      AuthenticationService authenticationService,
+      UserDetailsService userDetailsService)
       throws Exception {
     return http.cors(Customizer.withDefaults())
         .csrf(AbstractHttpConfigurer::disable)
@@ -44,6 +49,13 @@ public class WebSecurityConfig {
         .addFilterBefore(
             new JwtAuthenticationFilter(tokenService, userDetailsService),
             UsernamePasswordAuthenticationFilter.class)
+        .logout(
+            httpSecurity ->
+                httpSecurity
+                    .logoutUrl("/auth/logout")
+                    .addLogoutHandler(new JwtLogoutHandler(authenticationService))
+                    .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler())
+                    .permitAll())
         .build();
   }
 

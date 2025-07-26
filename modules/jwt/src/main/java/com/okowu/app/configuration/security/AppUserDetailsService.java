@@ -2,7 +2,6 @@ package com.okowu.app.configuration.security;
 
 import com.okowu.app.user.db.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -17,13 +16,7 @@ public class AppUserDetailsService implements UserDetailsService {
 
     return userRepository
         .findByEmail(email)
-        .map(
-            user ->
-                User.builder()
-                    .username(user.getEmail())
-                    .password(user.getPassword())
-                    .roles(user.getRole())
-                    .build())
+        .map(AppUserDetails::new)
         .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
   }
 }

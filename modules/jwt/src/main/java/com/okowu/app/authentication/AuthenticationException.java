@@ -1,6 +1,7 @@
 package com.okowu.app.authentication;
 
 import com.okowu.app.AppException;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 
 public class AuthenticationException extends AppException {
@@ -13,11 +14,11 @@ public class AuthenticationException extends AppException {
     return authenticationException;
   }
 
-  public static AuthenticationException invalidToken() {
+  public static AuthenticationException invalidToken(String message) {
     AuthenticationException authenticationException = new AuthenticationException();
     authenticationException.setStatus(HttpStatus.FORBIDDEN);
     authenticationException.setTitle("INVALID_TOKEN");
-    authenticationException.setMessage("The given token is invalid");
+    authenticationException.setMessage(StringUtils.defaultIfBlank(message, "The token is invalid"));
     return authenticationException;
   }
 }

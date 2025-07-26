@@ -20,6 +20,42 @@ public class JwtUtils {
 
   public record Token(String value, Date expirationDate) {}
 
+  public static Token createAccessToken(
+      String email, String username, String role, long expirationMillis, String encryptionKey) {
+    Date expirationDate = expirationDate(expirationMillis);
+    String jwt =
+        Jwts.builder()
+            .header()
+            .and()
+            .id(UUID.randomUUID().toString())
+            .issuer(ISSUER)
+            .issuedAt(new Date())
+            .subject(email)
+            .claim("username", username)
+            .claim("role", role)
+            .expiration(expirationDate)
+            .encryptWith(secretKey(encryptionKey), Jwts.ENC.A256GCM)
+            .compact();
+    return new Token(jwt, expirationDate);
+  }
+
+  public static Token createRefreshToken(
+      String email, long expirationMillis, String encryptionKey) {
+    Date expirationDate = expirationDate(expirationMillis);
+    String jwt =
+        Jwts.builder()
+            .header()
+            .and()
+            .id(UUID.randomUUID().toString())
+            .issuer(ISSUER)
+            .issuedAt(new Date())
+            .subject(email)
+            .expiration(expirationDate)
+            .encryptWith(secretKey(encryptionKey), Jwts.ENC.A256GCM)
+            .compact();
+    return new Token(jwt, expirationDate);
+  }
+
   public static Token getAccessToken(
       String email, String role, SecurityProperties securityProperties) {
     SecurityProperties.Jwt jwtProperties = securityProperties.jwt();

@@ -24,6 +24,7 @@ class UserRepositoryTest implements PostgreSQLContainerInitializer {
 
     User userToCreate = new User();
     userToCreate.setEmail(email);
+    userToCreate.setUsername("okowu");
     userToCreate.setPassword("password123");
     userToCreate.setRole("ROLE_USER");
 
@@ -38,6 +39,7 @@ class UserRepositoryTest implements PostgreSQLContainerInitializer {
     User user = optionalUser.get();
     assertThat(user.getId()).isNotNull();
     assertThat(user.getEmail()).isEqualTo(userToCreate.getEmail());
+    assertThat(user.getUsername()).isEqualTo(userToCreate.getUsername());
     assertThat(user.getPassword()).isEqualTo(userToCreate.getPassword());
     assertThat(user.getRole()).isEqualTo(userToCreate.getRole());
     assertThat(user.getCreatedAt()).isAfter(now);

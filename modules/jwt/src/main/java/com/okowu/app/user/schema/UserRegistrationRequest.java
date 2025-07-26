@@ -5,4 +5,6 @@ import jakarta.validation.constraints.NotBlank;
 import org.hibernate.validator.constraints.Length;
 
 public record UserRegistrationRequest(
-    @Email @NotBlank String email, @NotBlank @Length(min = 8) String password) {}
+    @Email @NotBlank String email,
+    @NotBlank @Length(max = 8) String username,
+    @NotBlank @Length(min = 8) String password) {}

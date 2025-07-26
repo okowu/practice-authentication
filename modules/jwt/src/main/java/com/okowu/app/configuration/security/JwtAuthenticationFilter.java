@@ -1,6 +1,6 @@
 package com.okowu.app.configuration.security;
 
-import com.okowu.app.authentication.AuthenticationException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.okowu.app.authentication.service.TokenService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -11,17 +11,19 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
+  private final ObjectMapper objectMapper = new ObjectMapper();
   private final TokenService tokenService;
   private final UserDetailsService userDetailsService;
 
@@ -42,22 +44,33 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     try {
       Jwe<Claims> jwe = tokenService.validateToken(token);
       String subject = jwe.getPayload().getSubject();
-      UserDetails userDetails = userDetailsService.loadUserByUsername(subject);
+      AppUserDetails userDetails = (AppUserDetails) userDetailsService.loadUserByUsername(subject);
       Authentication authentication =
-          new UsernamePasswordAuthenticationToken(
-              userDetails.getUsername(), userDetails.getPassword(), userDetails.getAuthorities());
+          new AppAuthentication(
+              userDetails.getEmail(),
+              userDetails.getRealUsername(),
+              userDetails.getPassword(),
+              userDetails.getAuthorities());
       SecurityContextHolder.getContext().setAuthentication(authentication);
     } catch (ExpiredJwtException e) {
-      response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Expired JWT value");
+      sendServletErrorResponse(response, "EXPIRED_TOKEN", e);
       return;
     } catch (JwtException e) {
-      response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid JWT value");
-      return;
-    } catch (AuthenticationException e) {
-      response.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
+      sendServletErrorResponse(response, "INVALID_TOKEN", e);
       return;
     }
 
     filterChain.doFilter(request, response);
+  }
+
+  private void sendServletErrorResponse(HttpServletResponse response, String title, JwtException e)
+      throws IOException {
+    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+    response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+    Map<String, Object> errors = new HashMap<>();
+    errors.put("status", HttpServletResponse.SC_FORBIDDEN);
+    errors.put("title", title);
+    errors.put("message", e.getMessage());
+    response.getWriter().write(objectMapper.writeValueAsString(errors));
   }
 }

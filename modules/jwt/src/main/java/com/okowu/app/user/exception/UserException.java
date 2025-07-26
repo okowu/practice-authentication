@@ -9,7 +9,7 @@ public class UserException extends AppException {
     UserException userException = new UserException();
     userException.setStatus(HttpStatus.CONFLICT);
     userException.setTitle("USER_ALREADY_EXISTS");
-    userException.setMessage("User with email %s already exists.".formatted(email));
+    userException.setMessage("User %s already exists.".formatted(email));
     return userException;
   }
 

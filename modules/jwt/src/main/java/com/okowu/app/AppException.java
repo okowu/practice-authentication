@@ -6,9 +6,15 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @Setter
-public class AppException extends RuntimeException {
+public abstract class AppException extends RuntimeException {
 
-  private HttpStatus status;
-  private String title;
-  private String message;
+  protected HttpStatus status;
+  protected String title;
+  protected String message;
+
+  protected AppException() {}
+
+  protected AppException(Throwable e) {
+    super(e);
+  }
 }

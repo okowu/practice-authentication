@@ -23,9 +23,14 @@ public class UserServiceImpl implements UserService {
       throw UserException.userExists(request.email());
     }
 
+    if (userRepository.existsByUsername(request.username())) {
+      throw UserException.userExists(request.username());
+    }
+
     String encodedPassword = passwordEncoder.encode(request.password());
     User user = new User();
     user.setEmail(request.email());
+    user.setUsername(request.username());
     user.setPassword(encodedPassword);
     user.setRole("USER");
     return userRepository.save(user).getId();
