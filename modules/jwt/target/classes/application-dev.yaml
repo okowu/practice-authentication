@@ -1,0 +1,21 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/practice
+    username: ${DB_USERNAME:}
+    password: ${DB_PASSWORD:}
+  jpa:
+    properties:
+      hibernate:
+        default_schema: jwt
+        ddl-auto: none
+    open-in-view: false
+  liquibase:
+    enabled: true
+    default-schema: jwt
+    change-log: classpath:db/changelog/db.changelog-master.xml
+
+security:
+  jwt:
+    secretKey: ${JWT_SECRET:}
+    expirationMillis: 900000
+    refreshExpirationMillis: 604800000

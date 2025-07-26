@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+		xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+	<changeSet id="4.1" author="okowu">
+		<addColumn tableName="document">
+			<column name="size" type="bigint">
+				<constraints nullable="false" />
+			</column>
+			<column name="description" type="TEXT" />
+			<column name="favorite" type="boolean" defaultValueBoolean="false">
+				<constraints nullable="false" />
+			</column>
+		</addColumn>
+	</changeSet>
+	<changeSet id="4.2" author="okowu">
+		<addNotNullConstraint
+				tableName="document"
+				columnName="visibility"
+				columnDataType="boolean" />
+	</changeSet>
+	<changeSet id="4.3" author="okowu">
+		<addDefaultValue
+				tableName="document"
+				columnName="visibility"
+				columnDataType="boolean"
+				defaultValueBoolean="false" />
+	</changeSet>
+</databaseChangeLog>
